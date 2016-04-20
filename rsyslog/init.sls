@@ -1,8 +1,16 @@
-{% from "rsyslog/map.jinja" import rsyslog with context %}
+{% from "rsyslog/map.jinja" import rsyslog with context -%}
+{% set install_from_source = rsyslog.get('install_from_source', False) -%}
 
+{% if install_from_source -%}
+include:
+  - rsyslog.source
+{% else -%}
 rsyslog:
   pkg.installed:
     - name: {{ rsyslog.package }}
+{% endif -%}
+
+rsyslog-config:
   file.managed:
     - name: {{ rsyslog.config }}
     - template: jinja
@@ -13,8 +21,12 @@ rsyslog:
     - enable: True
     - name: {{ rsyslog.service }}
     - require:
+      {% if install_from_source -%}
+      - cmd: rsyslog
+      {% else -%}
       - pkg: {{ rsyslog.package }}
-    - watch: 
+      {% endif %}
+    - watch:
       - file: {{ rsyslog.config }}
 
 workdirectory:

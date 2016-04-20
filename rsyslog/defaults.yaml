@@ -8,3 +8,5 @@ rsyslog:
   config: /etc/rsyslog.conf
   workdirectory: /var/spool/rsyslog
   custom_config_path: /etc/rsyslog.d
+
+
