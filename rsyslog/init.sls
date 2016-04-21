@@ -16,7 +16,7 @@ rsyslog-config:
     - template: jinja
     - source: {{ rsyslog.get('config_template' , 'salt://rsyslog/templates/rsyslog.conf.jinja') }}
     - context:
-      config: {{ salt['pillar.get']('rsyslog', {}) }}
+      config: {{ salt['pillar.get']('rsyslog', {})|json }}
   service.running:
     - enable: True
     - name: {{ rsyslog.service }}

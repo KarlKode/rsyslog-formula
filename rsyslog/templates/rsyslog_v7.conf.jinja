@@ -1,27 +1,28 @@
 #################
 #### MODULES ####
 #################
+
 {% for module in config.get('modules', []) -%}
 module(load="{{ module }}")
-{% endfor -%}
+{% endfor %}
 
 ###########################
 #### GLOBAL DIRECTIVES ####
 ###########################
 
 global(
-  {% for directive, value in config.get('global_directives', {}).items() -%}
-    {{ directive }}="{{ value }}"
-  {% endfor -%}
+{% for directive, value in config.get('global_directives', {}).items() -%}
+  {{ directive }}="{{ value }}"
+{% endfor -%}
 )
 
 {% if 'main_queue' in config -%}
 main_queue(
-  {% for parameter, value in config.get('main_queue', {}).items() -%}
-    {{ parameter }}="{{ value }}"
-  {% endfor -%}
-{% endif -%}
-
+{% for parameter, value in config.get('main_queue', {}).items() -%}
+  {{ parameter }}="{{ value }}"
+{% endfor -%}
+)
+{% endif %}
 
 ##################
 #### RULESETS ####
@@ -29,12 +30,11 @@ main_queue(
 
 {% for name, rules in config.get('rulesets', {}).items() -%}
 ruleset(name="{{ name }}) {
-  {% for rule in rules -%}
-    {{ rule }}
-  {% endfor -%}
-}
+{% for rule in rules -%}
+  {{ rule }}
 {% endfor -%}
-
+}
+{% endfor %}
 
 ################
 #### INPUTS ####
@@ -42,32 +42,33 @@ ruleset(name="{{ name }}) {
 
 {% for type, parameters in config.get('inputs', {}).items() -%}
 input(
-  type="{{ input['type'] }}
-  {% for parameter, value in parameters.items() -%}
-  {{ parameter}} {{ value }}
-  {% endfor -%}
-)
+type="{{ type }}"
+{% for parameter, value in parameters.items() -%}
+  {{ parameter }}="{{ value }}"
 {% endfor -%}
-
+)
+{% endfor %}
 
 ###################
 #### TEMPLATES ####
 ###################
 
-{% for template in config.get('templates', {}).items() -%}
+{% for template in config.get('templates', []) -%}
 template(
-  name="{{ template['name'] }}"
-  type="{{ template['type'] }}"
-  {% for parameter, value in template.get('parameters', {}).items() -%}
-  {{ parameter}}="{{ value }}"
-  {% endfor -%}
-) {% if descriptions %} {
-    {% for description in template.get('descriptions', []) -%}
-      {{ description }}
-    {% endfor %}
+name="{{ template['name'] }}"
+type="{{ template['type'] }}"
+{% for parameter, value in template.get('parameters', {}).items() -%}
+  {{ parameter }}="{{ value }}"
+{% endfor -%}
+)
+{% if 'descriptions' in template -%}
+{
+{% for description in template.get('descriptions', []) -%}
+    {{ description }}
+{% endfor -%}
+}
   {% endif %}
 {% endfor %}
-
 
 ###############
 #### RULES ####
